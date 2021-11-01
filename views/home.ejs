@@ -10,7 +10,6 @@
 		const [accessToken, tokenType] = [fragment.get('access_token'), fragment.get('token_type')];
 
 		if (!accessToken) {
-            alert("FAIL");
 			return document.getElementById('login').style.display = 'block';
 		}
 
