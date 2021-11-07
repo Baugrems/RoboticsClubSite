@@ -1,0 +1,29 @@
+<%- include('../partials/header') %>
+<div class="container">
+    <div class="row">
+        <h1 style="text-align: center">Edit - <%= team.name %></h1>
+        <div style="width: 30%; margin: 30px auto;">
+        <form action="/teams/<%= team._id %>/?_method=PUT" method="POST">
+            <div class="form-group">
+                <input class="form-control" type="text" value="<%= team.name %>" name="team[name]" required>
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="text" value="<%= team.leader %>" name="team[leader]" required>
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="text" value="<%= team.image %>" name="team[image]" required>
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="textarea" value="<%= team.description %>" name="team[description]" required>
+            </div>
+            <div class="form-group">
+                <input class="btn btn-lg btn-primary btn-block" type="submit" value="Edit team">
+            </div>
+        </form>
+            <a class="btn btn-primary" href="/teams/<%= team._id %>">Cancel</a>
+        </div>
+
+    </div>
+</div>
+
+<%- include('../partials/footer') %>
