@@ -23,13 +23,13 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.json());
 // cookie parser middleware
-app.use(cookieParser());
+// app.use(cookieParser());
 
-//username and password
-const myusername;
+// //username and password
+// const myusername;
 
-// a variable to save a session
-var session;
+// // a variable to save a session
+// var session;
 
 app.get("/", function(req,res){
     res.render('home');
