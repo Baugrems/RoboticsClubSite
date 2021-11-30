@@ -2,7 +2,14 @@ var express = require("express");
 var router = express.Router();
 var Team = require("../Models/team");
 
-//Placeholder for CRUD of teams, tie to MongoDB later
+function requireLogin(req, res, next) {
+    if (!req.session.officer) {
+        res.redirect('/');
+      } else {
+        next();
+      }
+  }
+
 router.get("/", function(req, res){
     Team.find({}, function(err, teams){
         if(err){
@@ -13,7 +20,7 @@ router.get("/", function(req, res){
     });
 });
 
-router.post("/", function(req, res){
+router.post("/", requireLogin, function(req, res){
     var name = req.body.name;
     var image = req.body.image;
     var description = req.body.description;
@@ -29,7 +36,7 @@ router.post("/", function(req, res){
 });
 
 
-router.get("/new", function(req, res){
+router.get("/new", requireLogin, function(req, res){
     res.render("teams/new"); 
  });
  
@@ -45,7 +52,7 @@ router.get("/new", function(req, res){
  });
  
  //EDIT ROUTE
- router.get("/:id/edit", function(req, res){
+ router.get("/:id/edit", requireLogin, function(req, res){
          Team.findById(req.params.id, function(err, team){
              if(err){
                  req.flash("error", err.message);
@@ -57,7 +64,7 @@ router.get("/new", function(req, res){
  });
  
  //UPDATE ROUTE
- router.put("/:id", function(req, res){
+ router.put("/:id", requireLogin, function(req, res){
      Team.findByIdAndUpdate(req.params.id, req.body.team, function(err, updatedTeam){
          if(err){
              res.redirect("/teams");
@@ -69,7 +76,7 @@ router.get("/new", function(req, res){
  });
  
  //DELETE ROUTE
- router.delete("/:id", function(req, res){
+ router.delete("/:id", requireLogin, function(req, res){
      Team.findByIdAndRemove(req.params.id, function(err){
          if(err){
              res.redirect("/teams");

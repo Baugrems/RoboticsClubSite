@@ -8,6 +8,7 @@ var Team = require('./Models/team.js');
 methodOverride = require("method-override");
 flash = require("connect-flash");
 
+
 // creating 24 hours from milliseconds
 const oneDay = 1000 * 60 * 60 * 24;
 
@@ -18,9 +19,11 @@ app.use(session({
     cookie: { maxAge: oneDay },
     resave: false
 }));
-
-
-
+app.use(function(req, res, next) {
+    res.locals.session = req.session;
+    next();
+  });
+var members = {};
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 
@@ -30,16 +33,16 @@ app.use(express.json());
 
 app.use(methodOverride("_method"));
 app.use(flash());
-// cookie parser middleware
-// app.use(cookieParser());
-
-// //username and password
-// const myusername;
-
-// // a variable to save a session
-// var session;
+app.use(cookieParser());
 
 app.get("/", function(req,res){
+    if (!req.session.officer) {
+        for (let i = 0; i < members.length; i++) {
+            if (members[i] == req.session.discordID) {
+                req.session.officer = true;
+            }
+        }
+    }
     res.render('home');
 });
 
@@ -47,20 +50,6 @@ app.get("/", function(req,res){
 app.get("/help", function(req, res) {
     res.render('help');
 });
-
-//Test post route for teams
-// app.post('/add', function(req,res) {
-//     const team = new Team({
-//       name: req.body.name,
-//       leader: req.body.leader,
-//       image: req.body.image,
-//       description: req.body.description
-//     });
-//     team.save().then(val => {
-//       res.json({ msg: "Team Added Successfully", val: val })
-//     })
-//   })
-
 
 //Database startup
 mongoose.connect("mongodb+srv://Shane:" + process.env.DBPASS + "@cluster0.5uh8w.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", {useNewUrlParser: true});
@@ -72,9 +61,34 @@ mongoose.connection.once('open',function(){
 
 //route setup
 var teamRoutes    = require("./routes/teams");
+var userRoutes    = require("./routes/user");
 
 app.use("/teams", teamRoutes);
+app.use("/user", userRoutes);
 
 //Listener to turn website on
 app.listen(process.env.PORT, process.env.IP);
 console.log("Robotics Club Site - Active!");
+
+
+// BOT STUFF
+const Discord = require('discord.js');
+const bot = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES"] })
+
+const TOKEN = process.env.TOKEN;
+const OFFICER_ROLE_ID = process.env.OFFICER_ROLE_ID;
+
+
+bot.on('ready', () => {
+    console.log(`Logged in as ${bot.user.tag}!`);
+    
+  });
+
+bot.on('message', msg => {
+    if (msg.content == "Officer Update") {
+        members = msg.guild.roles.cache.get(OFFICER_ROLE_ID).members.map(m=>m.user.id); // get list of officers in club
+    }
+});
+
+
+bot.login(TOKEN);
