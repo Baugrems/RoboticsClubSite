@@ -9,6 +9,7 @@ methodOverride = require("method-override");
 flash = require("connect-flash");
 
 
+
 // creating 24 hours from milliseconds
 const oneDay = 1000 * 60 * 60 * 24;
 
@@ -49,6 +50,10 @@ app.get("/", function(req,res){
 
 app.get("/help", function(req, res) {
     res.render('help');
+});
+
+app.get("/badAuth", function(req, res) {
+    res.render('badAuth');
 });
 
 //Database startup

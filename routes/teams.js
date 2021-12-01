@@ -1,10 +1,17 @@
 var express = require("express");
 var router = express.Router();
 var Team = require("../Models/team");
+const { Webhook, MessageBuilder } = require('discord-webhook-node');
+const hook = new Webhook("https://discord.com/api/webhooks/906699267262013440/O9xAzYx0OwNQsvELUuBFRQaa37sH6Oyart9F6lZmetg8Z3H70IP938qUEThwP1oYU_51");
+ 
+
+hook.setUsername('Robotics Website Logger');
+
+
 
 function requireLogin(req, res, next) {
     if (!req.session.officer) {
-        res.redirect('/');
+        res.redirect('/badAuth');
       } else {
         next();
       }
@@ -31,6 +38,9 @@ router.post("/", requireLogin, function(req, res){
             console.log(err);
         } else {
             res.redirect("/teams");
+            var msg = req.session.userid + " created a new team! " + newlyCreatedTeam.name + " has been created.";
+
+            hook.send(msg);
         }
     });
 });
@@ -69,8 +79,10 @@ router.get("/new", requireLogin, function(req, res){
          if(err){
              res.redirect("/teams");
          } else {
-             req.flash("success", updatedTeam.name + " Updated Successfully!")
-             res.redirect("/teams/" + req.params.id);
+            var msg = req.session.userid + " edited " + updatedTeam.name + "!";
+
+            hook.send(msg);
+            res.redirect("/teams");
          }
      });
  });
@@ -81,8 +93,9 @@ router.get("/new", requireLogin, function(req, res){
          if(err){
              res.redirect("/teams");
          } else {
-             res.redirect("/teams");
-             req.flash("success", "Team Deleted Successfully");
+            var msg = req.session.userid + " deleted a team!";
+            hook.send(msg);
+            res.redirect("/teams");
          }
      });
  });

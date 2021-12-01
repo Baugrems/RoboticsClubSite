@@ -22,6 +22,7 @@
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.5",
     "discord": "^0.8.2",
+    "discord-webhook-node": "^1.1.8",
     "discord.js": "^13.3.1",
     "dotenv": "^10.0.0",
     "ejs": "^3.1.6",
@@ -30,6 +31,7 @@
     "method-override": "^3.0.0",
     "mongodb": "^4.1.4",
     "mongoose": "^6.0.12",
+    "node-fetch": "^3.1.0",
     "passport-discord": "^0.1.4"
   }
 }
